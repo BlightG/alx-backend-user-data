@@ -2,11 +2,10 @@
 """ a module for filter datum function """
 import logging
 import re
-PII_FIELDS = ('password', "email", 'ssn', 'ip', 'Passportnumber', 'IP')
+PII_FIELDS = ('password', "email", 'ssn', 'ip', 'phone')
 
 
-def filter_datum(fields: list, redaction: str,
-                 message: str, separator: str) -> str:
+def filter_datum(fields: list, redaction: str, message: str, separator: str) -> str:
     """ a filter datum  function """
     for field in fields:
         message = re.sub(f'(?<={field}=).*?(?=;)', redaction, message)
