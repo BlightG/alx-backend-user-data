@@ -40,7 +40,6 @@ def get_logger() -> logging.Logger:
     logger.addHandler(handler)
     return logger
 
-
 class RedactingFormatter(logging.Formatter):
     """ Redacting Formatter class
         """
@@ -62,3 +61,13 @@ class RedactingFormatter(logging.Formatter):
         records = filter_datum(self.fields, self.REDACTION,
                                message, self.SEPARATOR)
         return records
+
+
+if __name__ == '__main__':
+
+    """ main function to retrive info from database """
+    db = get_db()
+    cursor = db.cursor()
+    cursor.execute('SELECT * FROM users;')
+    for row in cursor:
+        print(row)
