@@ -1,4 +1,4 @@
-#!/usr/bin/penv python3
+#!/usr/bin/env python3
 """ encrypts a password """
 import bcrypt
 
