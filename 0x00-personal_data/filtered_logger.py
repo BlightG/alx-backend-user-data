@@ -1,11 +1,28 @@
 #!/usr/bin/env python3
 """ a module for filter datum function """
 import logging
+import mysql.connector
+import os
 import re
 PII_FIELDS = ('password', "email", 'ssn', 'ip', 'phone')
 
 
-def filter_datum(fields: list, redaction: str, message: str, separator: str) -> str:
+def get_db() -> mysql.connector.connection.MySQLConnection:
+    """ create a mysql connection using enviroment vairables """
+    user = os.environ.get('PERSONAL_DATA_DB_USERNAME', 'root')
+    password = os.environ.get('PERSONAL_DATA_DB_PASSWORD', '')
+    host = os.environ.get('PERSONAL_DATA_DB_HOST', 'localhost')
+    database = os.environ['PERSONAL_DATA_DB_NAME']
+
+    connection = mysql.connector.connect(host=host,
+                                         user=user,
+                                         password=password,
+                                         database=database)
+    return connection
+
+
+def filter_datum(fields: list, redaction: str,
+                 message: str, separator: str) -> str:
     """ a filter datum  function """
     for field in fields:
         message = re.sub(f'(?<={field}=).*?(?=;)', redaction, message)
