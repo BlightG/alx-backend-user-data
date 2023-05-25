@@ -8,7 +8,7 @@ import bcrypt
 PII_FIELDS = ('password', "email", 'ssn', 'ip', 'phone')
 
 
-def get_db():
+def get_db() -> mysql.connector.connection.MySQLConnection:
     """ create a mysql connection using enviroment vairables """
     user = os.environ.get('PERSONAL_DATA_DB_USERNAME', 'root')
     password = os.environ.get('PERSONAL_DATA_DB_PASSWORD', '')
@@ -30,7 +30,7 @@ def filter_datum(fields: list, redaction: str,
     return message
 
 
-def get_logger():
+def get_logger() -> logging.Logger:
     """ a function to rturn a logging object """
     logger = logging.getLogger('user_data')
     logger.setLevel(logging.INFO)
