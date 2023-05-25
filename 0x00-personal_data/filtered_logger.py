@@ -67,7 +67,11 @@ if __name__ == '__main__':
 
     """ main function to retrive info from database """
     db = get_db()
-    cursor = db.cursor()
+    cursor = db.cursor(dictionary=True)
     cursor.execute('SELECT * FROM users;')
     for row in cursor:
-        print(row)
+       message = ";".join(f"{key}={value}" for key, value in row.items())
+       log_record = logging.LogRecord("user_data", logging.INFO, None, None,
+                               message, None, None)
+       formatter = RedactingFormatter(fields=("name", "email", "ssn", "password", "phone"))
+       print(formatter.format(log_record))
