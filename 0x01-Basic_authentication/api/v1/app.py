@@ -12,6 +12,7 @@ import os
 app = Flask(__name__)
 app.register_blueprint(app_views)
 CORS(app, resources={r"/api/v1/*": {"origins": "*"}})
+auth = None
 
 
 @app.errorhandler(404)
@@ -22,20 +23,44 @@ def not_found(error) -> str:
 
 
 @app.errorhandler(403)
-def not_found(error) -> str:
+def forbidden(error) -> str:
     """ Forbidden request handler
     """
     return jsonify({"error": "Forbidden"}), 403
 
 
 @app.errorhandler(401)
-def not_found(error) -> str:
+def not_authorized(error) -> str:
     """ Unauthorized request handler
     """
     return jsonify({"error": "Unauthorized"}), 401
 
 
+@app.before_request
+def auth_check():
+    """ checks if authentication is needed """
+
+    if auth == None:
+        return
+    if auth.require_auth(request.path, ['/api/v1/status/',
+                                     '/api/v1/unauthorized/',
+                                     '/api/v1/forbidden/']) is False:
+        return
+
+    if auth.authorization_header(request) is None:
+        abort(401)
+
+    if auth.current_user(request) is None:
+        abort(403)
+
+
 if __name__ == "__main__":
     host = getenv("API_HOST", "0.0.0.0")
     port = getenv("API_PORT", "5000")
-    app.run(host=host, port=port)
+    if getenv("AUTH_TYPE") == "auth":
+        from api.v1.auth.auth import Auth
+        auth = Auth()
+    elif getenv("AUTH_TYPE") == "basic_auth":
+        from api.v1.auth.basic_auth import BasicAuth
+        auth = BasicAuth()
+    app.run(host=host, port=port, debug=True)
