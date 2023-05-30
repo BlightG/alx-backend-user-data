@@ -41,11 +41,12 @@ def auth_check():
     """ checks if authentication is needed """
 
     if auth is None:
-        return
+        return None
+
     if auth.require_auth(request.path, ['/api/v1/status/',
                                         '/api/v1/unauthorized/',
                                         '/api/v1/forbidden/']) is False:
-        return
+        return None
 
     if auth.authorization_header(request) is None:
         abort(401)
