@@ -5,7 +5,6 @@ from typing import List, TypeVar
 from flask import Flask
 
 
-
 class Auth:
     """ a class to manage the API authentication """
     def require_auth(self, path: str, excluded_paths: List[str]) -> bool:
@@ -19,13 +18,12 @@ class Auth:
         if path in excluded_paths:
             return False
         return True
-    
 
     def authorization_header(self, request=None) -> str:
         """ authorizes header """
         if request is None:
             return None
-    
+
         key = request.headers.get('Authorization')
         if key is None:
             return None
@@ -33,6 +31,5 @@ class Auth:
 
     def current_user(self, request=None) -> TypeVar('User'):
         """ current_user """
+        print('here')
         return None
-    
-    

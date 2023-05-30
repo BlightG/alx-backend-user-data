@@ -40,11 +40,11 @@ def not_authorized(error) -> str:
 def auth_check():
     """ checks if authentication is needed """
 
-    if auth == None:
+    if auth is None:
         return
     if auth.require_auth(request.path, ['/api/v1/status/',
-                                     '/api/v1/unauthorized/',
-                                     '/api/v1/forbidden/']) is False:
+                                        '/api/v1/unauthorized/',
+                                        '/api/v1/forbidden/']) is False:
         return
 
     if auth.authorization_header(request) is None:
