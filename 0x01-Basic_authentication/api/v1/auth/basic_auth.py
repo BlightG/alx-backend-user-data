@@ -54,6 +54,7 @@ class BasicAuth(Auth):
             return (None, None)
 
         auth64 = decoded_base64_authorization_header.split(":")
+        auth64[1] = ":".join(auth64[i] for i in range(1, len(auth64)))
 
         return (auth64[0], auth64[1])
 
