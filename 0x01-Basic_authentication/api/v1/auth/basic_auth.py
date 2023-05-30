@@ -1,6 +1,6 @@
 #!/use/bin/env python3
 """ a module for the basic_auth class """
-from .auth import Auth
+from api.v1.auth.auth import Auth
 from models.user import User
 from typing import TypeVar
 import base64
