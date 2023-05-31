@@ -54,6 +54,8 @@ def auth_check():
     if auth.current_user(request) is None:
         abort(403)
 
+    request.current_user = auth.current_user(request)
+
 
 if __name__ == "__main__":
     host = getenv("API_HOST", "0.0.0.0")
@@ -64,4 +66,7 @@ if __name__ == "__main__":
     elif getenv("AUTH_TYPE") == "basic_auth":
         from api.v1.auth.basic_auth import BasicAuth
         auth = BasicAuth()
+    elif getenv("AUTH_TYPE") == "session_auth":
+        from api.v1.auth.session_auth import SessionAuth
+        auth = SessionAuth()
     app.run(host=host, port=port, debug=True)
