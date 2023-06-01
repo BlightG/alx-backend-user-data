@@ -5,16 +5,17 @@ from models.user import User
 from typing import TypeVar
 import uuid
 
+
 class SessionAuth(Auth):
     """ a class session based Authentication """
-    
+
     user_id_by_session_id = {}
 
     def create_session(self, user_id: str = None) -> str:
         """ creates a session id for a user id """
         if user_id is None or not isinstance(user_id, str):
             return None
-        
+
         user_session = str(uuid.uuid4())
         self.user_id_by_session_id[user_session] = user_id
         return user_session
@@ -23,7 +24,7 @@ class SessionAuth(Auth):
         """ return user id based on session id """
         if session_id is None or not isinstance(session_id, str):
             return None
-        
+
         return self.user_id_by_session_id.get(session_id, None)
 
     def current_user(self, request=None):
@@ -35,7 +36,7 @@ class SessionAuth(Auth):
         cookie = self.session_cookie(request)
         if cookie is None:
             return None
-        
+
         user = self.user_id_for_session_id(cookie)
         if user is None:
             return None
@@ -58,4 +59,3 @@ class SessionAuth(Auth):
 
         del self.user_id_by_session_id[session_id]
         return True
-        
