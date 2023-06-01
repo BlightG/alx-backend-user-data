@@ -13,6 +13,15 @@ app = Flask(__name__)
 app.register_blueprint(app_views)
 CORS(app, resources={r"/api/v1/*": {"origins": "*"}})
 auth = None
+if getenv("AUTH_TYPE") == "auth":
+    from api.v1.auth.auth import Auth
+    auth = Auth()
+elif getenv("AUTH_TYPE") == "basic_auth":
+    from api.v1.auth.basic_auth import BasicAuth
+    auth = BasicAuth()
+elif getenv("AUTH_TYPE") == "session_auth":
+    from api.v1.auth.session_auth import SessionAuth
+    auth = SessionAuth()
 
 
 @app.errorhandler(404)
@@ -43,7 +52,6 @@ def auth_check():
     if auth is None:
         return None
 
-    print(auth)
     if auth.require_auth(
             request.path,
             ['/api/v1/status/',
@@ -66,14 +74,5 @@ if __name__ == "__main__":
 
     host = getenv("API_HOST", "0.0.0.0")
     port = getenv("API_PORT", "5000")
-    if getenv("AUTH_TYPE") == "auth":
-        from api.v1.auth.auth import Auth
-        auth = Auth()
-    elif getenv("AUTH_TYPE") == "basic_auth":
-        from api.v1.auth.basic_auth import BasicAuth
-        auth = BasicAuth()
-    elif getenv("AUTH_TYPE") == "session_auth":
-        from api.v1.auth.session_auth import SessionAuth
-        auth = SessionAuth()
 
     app.run(host=host, port=port, debug=True)
