@@ -43,6 +43,7 @@ def auth_check():
     if auth is None:
         return None
 
+    print(auth)
     if auth.require_auth(
             request.path,
             ['/api/v1/status/',
@@ -62,6 +63,7 @@ def auth_check():
 
 
 if __name__ == "__main__":
+
     host = getenv("API_HOST", "0.0.0.0")
     port = getenv("API_PORT", "5000")
     if getenv("AUTH_TYPE") == "auth":
@@ -73,4 +75,5 @@ if __name__ == "__main__":
     elif getenv("AUTH_TYPE") == "session_auth":
         from api.v1.auth.session_auth import SessionAuth
         auth = SessionAuth()
+
     app.run(host=host, port=port, debug=True)

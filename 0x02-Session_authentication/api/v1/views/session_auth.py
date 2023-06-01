@@ -32,7 +32,7 @@ def session_login() -> str:
         return jsonify({"error": "no user found for this email"}), 400
 
     user = user_l[0]
-    if user.is_valid_password(password):
+    if user.is_valid_password(password) is False:
         return jsonify({"error": "wrong password"}), 401
 
     from api.v1.app import auth
