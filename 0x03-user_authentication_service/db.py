@@ -47,7 +47,7 @@ class DB:
         self._session.commit()
         return user
     
-    def find_user_by (self, **kwargs):
+    def find_user_by (self, **kwargs) -> User:
         """ returns a user by the """
         columns = User.__table__.columns.keys()
         all_users = self._session.query(User)
@@ -60,3 +60,17 @@ class DB:
                         raise NoResultFound
             else:
                 raise InvalidRequestError
+
+    def update_user(self, user_id: int, **kwargs):
+        """ updates user instance """
+        if user_id is None:
+            return None
+
+        obj = self.find_user_by(id=user_id)
+        for k, v in kwargs.items():
+            if k in obj.__dict__:
+                setattr(obj, k, v)
+            else:
+                raise ValueError
+        
+        return None
