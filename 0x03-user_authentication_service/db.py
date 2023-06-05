@@ -3,7 +3,7 @@
 """
 from sqlalchemy import create_engine
 from sqlalchemy.exc import InvalidRequestError
-from sqlalchemy.orm.exc import NoResultFound
+from sqlalchemy.exc import NoResultFound
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import sessionmaker
 from sqlalchemy.orm.session import Session
@@ -46,24 +46,26 @@ class DB:
         self._session.add(user)
         self._session.commit()
         return user
-    
-    def find_user_by (self, **kwargs) -> User:
+
+    def find_user_by(self, **kwargs) -> User:
         """ returns a user by the """
         columns = User.__table__.columns.keys()
-        all_users = self._session.query(User)
+        all_users = self._session.query(User).all()
+        flag = False
         for k, v in kwargs.items():
             if k in columns:
                 for usr in all_users:
                     if getattr(usr, k) == v:
+                        flag = True
                         return usr
-                    else:
-                        raise NoResultFound
+                if flag is False:
+                    raise NoResultFound
             else:
                 raise InvalidRequestError
 
     def update_user(self, user_id: int, **kwargs):
         """ updates user instance """
-        if user_id is None:
+        if user_id is None or not isinstance(user_id, int):
             return None
 
         obj = self.find_user_by(id=user_id)
@@ -72,5 +74,5 @@ class DB:
                 setattr(obj, k, v)
             else:
                 raise ValueError
-        
+
         return None
