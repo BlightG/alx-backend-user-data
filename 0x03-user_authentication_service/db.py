@@ -77,5 +77,5 @@ class DB:
                     break
                 else:
                     raise ValueError
-        except NoResultFound:
+        except (NoResultFound, InvalidRequestError):
             return None
