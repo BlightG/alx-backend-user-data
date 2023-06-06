@@ -79,4 +79,4 @@ class DB:
                 setattr(obj, k, v)
             else:
                 raise ValueError
-        return None
+        # return None
