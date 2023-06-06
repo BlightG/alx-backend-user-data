@@ -2,7 +2,7 @@
 """ an AUTH module """
 import bcrypt
 from db import DB
-from user import User
+# from user import User
 import uuid
 from sqlalchemy.exc import InvalidRequestError
 from sqlalchemy.orm.exc import NoResultFound
@@ -17,6 +17,11 @@ def _hash_password(password: str) -> str:
     salt = bcrypt.gensalt()
     hashd = bcrypt.hashpw(b_pass, salt)
     return hashd.decode('utf-8')
+
+
+def _generate_uuid() -> str:
+    """ generates a uuid string """
+    return str(uuid.uuid4())
 
 
 class Auth:
@@ -63,9 +68,6 @@ class Auth:
         except (NoResultFound, InvalidRequestError):
             return False
 
-    def _generate_uuid(self) -> str:
-        """ generates a uuid string """
-        return str(uuid.uuid4())
 
     def create_session(self, u_email: str) -> str:
         """ returns an id for a session """
@@ -76,13 +78,13 @@ class Auth:
         kwarg = {'email': u_email}
         try:
             usr = self._db.find_user_by(**kwarg)
-            session = self._generate_uuid()
+            session = _generate_uuid()
             self._db.update_user(usr.id, session_id=session)
             return session
         except NoResultFound:
             return None
 
-    def get_user_from_session_id(self, u_session: str) -> User:
+    def get_user_from_session_id(self, u_session: str):
         """ returns a user from session id """
 
         if u_session is None or not isinstance(u_session, str):
@@ -114,7 +116,7 @@ class Auth:
 
         try:
             usr = self._db.find_user_by(email=u_email)
-            token = self._generate_uuid()
+            token = _generate_uuid()
             self._db.update_user(usr.id, reset_token=token)
             return token
         except NoResultFound:
