@@ -2,7 +2,6 @@
 """ an AUTH module """
 import bcrypt
 from db import DB
-# from user import User
 import uuid
 from sqlalchemy.exc import InvalidRequestError
 from sqlalchemy.orm.exc import NoResultFound
@@ -67,7 +66,6 @@ class Auth:
             return False
         except (NoResultFound, InvalidRequestError):
             return False
-
 
     def create_session(self, u_email: str) -> str:
         """ returns an id for a session """
