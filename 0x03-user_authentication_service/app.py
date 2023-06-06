@@ -1,13 +1,13 @@
 #!/usr/bin/env python3
 """ a flaskk app module """
 from flask import Flask, jsonify, request, abort, redirect
-from flask_cors import (CORS, cross_origin)
+# from flask_cors import (CORS, cross_origin)
 from auth import Auth
 
 
 AUTH = Auth()
 app = Flask(__name__)
-CORS(app, resources={r"*": {"origins": "*"}})
+# CORS(app, resources={r"*": {"origins": "*"}})
 
 
 @app.route('/', strict_slashes=False)
@@ -118,7 +118,8 @@ def update_password():
 
     try:
         AUTH.update_password(token, n_pass)
-        return jsonify({"email": f"{email}", "message": "Password updated"}), 200
+        return jsonify({"email": f"{email}",
+                        "message": "Password updated"}), 200
     except ValueError:
         abort(403)
 
