@@ -48,14 +48,13 @@ class Auth:
         """ verifies the password """
 
         if u_email is None or not isinstance(u_email, str):
-            return None
+            return False
 
         if u_password is None or not isinstance(u_password, str):
-            return None
+            return False
 
-        kwarg = {'email': u_email}
         try:
-            usr = self._db.find_user_by(**kwarg)
+            usr = self._db.find_user_by(email=u_email)
             if usr.email == u_email:
                 b_pass = usr.hashed_password.encode('utf-8')
                 b_hash = u_password.encode('utf-8')
