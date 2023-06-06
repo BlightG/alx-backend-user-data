@@ -62,6 +62,7 @@ class DB:
                     raise NoResultFound
             else:
                 raise InvalidRequestError
+        raise InvalidRequestError
 
     def update_user(self, user_id: int, **kwargs):
         """ updates user instance """
