@@ -77,6 +77,6 @@ class DB:
         for k, v in kwargs.items():
             if k in obj.__dict__:
                 setattr(obj, k, v)
-                return None
             else:
                 raise ValueError
+        return None
