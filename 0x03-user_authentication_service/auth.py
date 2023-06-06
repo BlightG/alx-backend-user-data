@@ -78,8 +78,44 @@ class Auth:
         try:
             usr = self._db.find_user_by(**kwarg)
             session = self._generate_uuid()
-            s_kwarg = {'session_id': session}
-            self._db.update_user(usr.email, **s_kwarg)
+            self._db.update_user(usr.id, session_id = session)
             return session
         except NoResultFound:
             return None
+
+    def get_user_from_session_id(self, u_session: str) -> User:
+        """ returns a user from session id """
+
+        if u_session is None or not isinstance(u_session, str):
+            return None
+
+        try:
+            usr = self._db.find_user_by(session_id=u_session)
+            return usr
+        except NoResultFound:
+            return None
+
+    def destroy_session(self, user_id: int):
+        """ destroyes a session_id of a user class """
+        if user_id is None or not isinstance(user_id, int):
+            return None
+
+        kwargs = {'id': user_id}
+        try:
+            usr = self._db.find_user_by(**kwargs)
+            self._db.update_user(usr.id, session_id = None)
+        except NoResultFound:
+            return None
+
+    def get_reset_password_token(self, u_email: str) -> str:
+        """ used to reset the password """
+
+        if u_email is None or not isinstance(u_email, str):
+            return None
+
+        try:
+            usr = self._db.find_user_by(email=u_email)
+            token = self._generate_uuid()
+            self._db.update_user(usr.id, reset_token = token)
+        except NoResultFound:
+            raise ValueError

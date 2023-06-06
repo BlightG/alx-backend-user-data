@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """ a flaskk app module """
-from flask import Flask, jsonify, request, abort
+from flask import Flask, jsonify, request, abort, redirect
 from flask_cors import (CORS, cross_origin)
 from auth import Auth
 
@@ -19,6 +19,7 @@ def home():
 
 @app.route('/users', methods=['POST'], strict_slashes=False)
 def users():
+    """  used to create a user """
     email = request.form.get('email')
     password = request.form.get('password')
 
@@ -34,6 +35,7 @@ def users():
 
 @app.route('/sessions', methods=['POST'], strict_slashes=False)
 def login():
+    """ used to login using session """
     email = request.form.get('email')
     password = request.form.get('password')
 
@@ -50,6 +52,36 @@ def login():
             abort(401)
     else:
         abort(401)
+
+@app.route('/sessions', methods=['DELETE'], strict_slashes=False)
+def logout():
+    """ used to logout """
+    c_session = request.cookies.get('session_id')
+    if c_session is None:
+        return abort(403)
+
+    usr = AUTH.get_user_from_session_id(c_session)
+    if usr is None:
+        abort(403)
+    
+    AUTH.destroy_session(usr.id)
+    return redirect('/')
+
+@app.route('/profile', methods=['GET'], strict_slashes=False)
+def profile():
+    """ returns a usr using a sesion id cookie """
+    c_session = request.cookies.get('session_id')
+    if c_session is None:
+        return abort(403)
+
+    usr = AUTH.get_user_from_session_id(c_session)
+    if usr is None:
+        abort(403)
+
+    json = jsonify({'message': usr.email})
+    json.set_cookie('session_id', c_session)
+    return json
+
 
 if __name__ == "__main__":
     app.run(host="0.0.0.0", port="5000", debug=True)
