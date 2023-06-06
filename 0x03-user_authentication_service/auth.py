@@ -3,6 +3,7 @@
 import bcrypt
 from db import DB
 from user import User
+import uuid
 from sqlalchemy.exc import NoResultFound
 
 
@@ -34,14 +35,11 @@ class Auth:
 
         b_hash = _hash_password(u_password)
         hash = b_hash.decode('utf-8')
-        if self._db._session.query(User).first() is None:
-            usr = self._db.add_user(u_email, hash)
-            return usr
 
         kwarg = {'email': u_email}
         try:
             obj = self._db.find_user_by(**kwarg)
-            raise ValueError(f'User {u_email} already exists')
+            raise ValueError(f'User {obj.email} already exists')
         except NoResultFound:
             usr = self._db.add_user(u_email, hash)
             return usr
@@ -61,10 +59,27 @@ class Auth:
             if usr.email == u_email:
                 b_pass = usr.hashed_password.encode('utf-8')
                 b_hash = u_password.encode('utf-8')
-                # print(b_pass)
-                # print(b_hash)
                 return bcrypt.checkpw(b_hash, b_pass)
-                return True
             return False
         except NoResultFound:
             return False
+
+    def _generate_uuid(self) -> str:
+        """ generates a uuid string """
+        return str(uuid.uuid4())
+
+    def create_session(self, u_email: str) -> str:
+        """ returns an id for a session """
+
+        if u_email is None or not isinstance(u_email, str):
+            return None
+        
+        kwarg = {'email': u_email}
+        try:
+            usr = self._db.find_user_by(**kwarg)
+            session = self._generate_uuid()
+            s_kwarg = {'session_id': session}
+            self._db.update_user(usr.email, **s_kwarg)
+            return session
+        except NoResultFound:
+            return None

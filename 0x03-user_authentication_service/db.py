@@ -68,11 +68,13 @@ class DB:
         if user_id is None or not isinstance(user_id, int):
             return None
 
-        obj = self.find_user_by(id=user_id)
-        for k, v in kwargs.items():
-            if k in obj.__dict__:
-                setattr(obj, k, v)
-            else:
-                raise ValueError
-
-        return None
+        try:
+            obj = self.find_user_by(id=user_id)
+            for k, v in kwargs.items():
+                if k in obj.__dict__:
+                    setattr(obj, k, v)
+                    return
+                else:
+                    raise ValueError
+        except NoResultFound:
+            return None
