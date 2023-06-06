@@ -73,12 +73,12 @@ class Auth:
 
         if u_email is None or not isinstance(u_email, str):
             return None
-        
+
         kwarg = {'email': u_email}
         try:
             usr = self._db.find_user_by(**kwarg)
             session = self._generate_uuid()
-            self._db.update_user(usr.id, session_id = session)
+            self._db.update_user(usr.id, session_id=session)
             return session
         except NoResultFound:
             return None
@@ -103,7 +103,7 @@ class Auth:
         kwargs = {'id': user_id}
         try:
             usr = self._db.find_user_by(**kwargs)
-            self._db.update_user(usr.id, session_id = None)
+            self._db.update_user(usr.id, session_id=None)
         except NoResultFound:
             return None
 
@@ -116,6 +116,24 @@ class Auth:
         try:
             usr = self._db.find_user_by(email=u_email)
             token = self._generate_uuid()
-            self._db.update_user(usr.id, reset_token = token)
+            self._db.update_user(usr.id, reset_token=token)
+            return token
         except NoResultFound:
             raise ValueError
+
+    def update_password(self, token: str, u_password: str):
+        """ updates password """
+        if token is None or not isinstance(token, str):
+            return None
+
+        if u_password is None or not isinstance(u_password, str):
+            return None
+
+        try:
+            usr = self._db.find_user_by(reset_token=token)
+        except NoResultFound:
+            raise ValueError
+
+        b_pass = _hash_password(u_password).encode('utf-8')
+        self._db.update_user(usr.id, hashed_password=b_pass, reset_token=None)
+        return None
