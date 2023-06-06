@@ -18,7 +18,7 @@ class DB:
     def __init__(self) -> None:
         """Initialize a new DB instance
         """
-        self._engine = create_engine("sqlite:///a.db", echo=False)
+        self._engine = create_engine("sqlite:///a.db", echo=True)
         Base.metadata.drop_all(self._engine)
         Base.metadata.create_all(self._engine)
         self.__session = None
@@ -66,8 +66,8 @@ class DB:
 
     def update_user(self, user_id: int, **kwargs):
         """ updates user instance """
-        # if user_id is None or not isinstance(user_id, int):
-        #     return None
+        if user_id is None or not isinstance(user_id, int):
+            return None
 
         try:
             obj = self.find_user_by(id=user_id)
