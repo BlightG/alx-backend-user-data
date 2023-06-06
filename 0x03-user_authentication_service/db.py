@@ -66,8 +66,8 @@ class DB:
 
     def update_user(self, user_id: int, **kwargs):
         """ updates user instance """
-        if user_id is None or not isinstance(user_id, int):
-            return None
+        # if user_id is None or not isinstance(user_id, int):
+        #     return None
 
         try:
             obj = self.find_user_by(id=user_id)
