@@ -7,7 +7,7 @@ from auth import Auth
 
 AUTH = Auth()
 app = Flask(__name__)
-CORS(app, resources={r"/api/v1/*": {"origins": "*"}})
+CORS(app, resources={r"*": {"origins": "*"}})
 
 
 @app.route('/', strict_slashes=False)
@@ -124,4 +124,4 @@ def update_password():
 
 
 if __name__ == "__main__":
-    app.run(host="0.0.0.0", port="5000", debug=True)
+    app.run(host="0.0.0.0", port="5000")
