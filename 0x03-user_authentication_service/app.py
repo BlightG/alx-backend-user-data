@@ -30,7 +30,7 @@ def users():
         return jsonify({"message": "email already registered"}), 400
 
     if usr is not None:
-        return jsonify({"email": email, "message": "user created"})
+        return jsonify({"email": f'{email}', "message": "user created"})
     else:
         return jsonify({"message": "email already registered"}), 400
 
@@ -47,8 +47,8 @@ def login():
     if AUTH.valid_login(email, password):
         session = AUTH.create_session(email)
         if session:
-            json = jsonify({"email": email, "message": "logged in"})
-            json.set_cookie('session_id', session)
+            json = jsonify({"email": f"{email}", "message": "logged in"})
+            json.set_cookie('session_id', f"{session}")
             return json
         else:
             abort(401)
@@ -82,8 +82,8 @@ def profile():
     if usr is None:
         abort(403)
 
-    json = jsonify({'message': usr.email})
-    json.set_cookie('session_id', c_session)
+    json = jsonify({'message': f"{usr.email}"})
+    json.set_cookie('session_id', f"{c_session}")
     return json
 
 
@@ -96,7 +96,7 @@ def get_reset_password_token():
 
     try:
         token = AUTH.get_reset_password_token(email)
-        return jsonfiy({'email': email, 'reset_token': token})
+        return jsonfiy({'email': f"{email}", 'reset_token': f"{token}"})
     except ValueError:
         abort(403)
 
@@ -118,7 +118,7 @@ def update_password():
 
     try:
         AUTH.update_password(token, n_pass)
-        return jsonify({"email": email, "message": "Password updated"}), 200
+        return jsonify({"email": f"{email}", "message": "Password updated"}), 200
     except ValueError:
         abort(403)
 
