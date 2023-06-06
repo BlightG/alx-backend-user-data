@@ -1,13 +1,14 @@
 #!/usr/bin/env python3
 """ a flaskk app module """
 from flask import Flask, jsonify, request, abort, redirect
-# from flask_cors import (CORS, cross_origin)
+import flask
+from flask_cors import (CORS, cross_origin)
 from auth import Auth
 
 
 AUTH = Auth()
 app = Flask(__name__)
-# CORS(app, resources={r"*": {"origins": "*"}})
+CORS(app, resources={r"*": {"origins": "*"}})
 
 
 @app.route('/', strict_slashes=False)
@@ -15,7 +16,7 @@ def home():
     """GET /
         RETURNS A JSONIFY RESPONSE
     """
-    return jsonify({"message": "Bienvenue"})
+    return flask.jsonify({"message": "Bienvenue"})
 
 
 @app.route('/users', methods=['POST'], strict_slashes=False)
