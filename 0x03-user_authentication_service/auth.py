@@ -61,7 +61,7 @@ class Auth:
                 b_hash = u_password.encode('utf-8')
                 return bcrypt.checkpw(b_hash, b_pass)
             return False
-        except NoResultFound:
+        except (NoResultFound, InvalidRequestError):
             return False
 
     def _generate_uuid(self) -> str:
