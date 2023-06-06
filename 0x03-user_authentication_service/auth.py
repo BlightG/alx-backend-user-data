@@ -8,7 +8,7 @@ from sqlalchemy.exc import InvalidRequestError
 from sqlalchemy.orm.exc import NoResultFound
 
 
-def _hash_password(password: str) -> bytes:
+def _hash_password(password: str) -> str:
     """ has password """
     if password is None or not isinstance(password, str):
         return None
@@ -34,8 +34,7 @@ class Auth:
         if u_password is None or not isinstance(u_password, str):
             return None
 
-        b_hash = _hash_password(u_password)
-        hash = b_hash.decode('utf-8')
+        hash = _hash_password(u_password)
 
         kwarg = {'email': u_email}
         try:
