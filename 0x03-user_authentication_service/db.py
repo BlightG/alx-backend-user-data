@@ -71,11 +71,13 @@ class DB:
 
         try:
             obj = self.find_user_by(id=user_id)
-            for k, v in kwargs.items():
-                if k in obj.__dict__:
-                    setattr(obj, k, v)
-                    break
-                else:
-                    raise ValueError
         except (NoResultFound, InvalidRequestError):
             return None
+
+        for k, v in kwargs.items():
+            if k in obj.__dict__:
+                setattr(obj, k, v)
+                break
+            else:
+                raise ValueError
+        return None
