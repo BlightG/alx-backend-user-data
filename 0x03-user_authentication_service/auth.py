@@ -38,14 +38,14 @@ class Auth:
         if u_password is None or not isinstance(u_password, str):
             return None
 
-        hash = _hash_password(u_password)
+        hashd = _hash_password(u_password)
 
         kwarg = {'email': u_email}
         try:
             obj = self._db.find_user_by(**kwarg)
             raise ValueError(f'User {obj.email} already exists')
         except (NoResultFound, InvalidRequestError):
-            usr = self._db.add_user(u_email, hash)
+            usr = self._db.add_user(u_email, hashd)
             return usr
 
     def valid_login(self, u_email: str, u_password: str) -> bool:
@@ -133,6 +133,6 @@ class Auth:
         except NoResultFound:
             raise ValueError
 
-        b_pass = _hash_password(u_password).encode('utf-8')
+        b_pass = _hash_password(u_password)
         self._db.update_user(usr.id, hashed_password=b_pass, reset_token=None)
         return None

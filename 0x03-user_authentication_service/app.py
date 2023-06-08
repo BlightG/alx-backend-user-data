@@ -85,7 +85,7 @@ def profile():
 
     json = jsonify({'message': f"{usr.email}"})
     json.set_cookie('session_id', f"{c_session}")
-    return json
+    return json, 200
 
 
 @app.route('/reset_password', methods=['POST'], strict_slashes=False)
@@ -97,7 +97,7 @@ def get_reset_password_token():
 
     try:
         token = AUTH.get_reset_password_token(email)
-        return jsonfiy({'email': f"{email}", 'reset_token': f"{token}"})
+        return jsonify({'email': f"{email}", 'reset_token': f"{token}"}), 200
     except ValueError:
         abort(403)
 
@@ -126,4 +126,4 @@ def update_password():
 
 
 if __name__ == "__main__":
-    app.run(host="0.0.0.0", port="5000")
+    app.run(host="0.0.0.0", port="5000", debug=True)
