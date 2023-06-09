@@ -42,7 +42,7 @@ def profile_logged(session_id: str) -> None:
     payload = {'session_id': session_id}
     r = requests.get('http://127.0.0.1:5000/profile', cookies=payload)
     assert r.status_code == 200
-    assert r.json() == {'message': EMAIL}
+    assert r.json() == {'email': EMAIL}
 
 
 def log_out(session_id: str) -> None:

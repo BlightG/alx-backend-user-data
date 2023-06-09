@@ -83,7 +83,7 @@ def profile():
     if usr is None:
         abort(403)
 
-    json = jsonify({'message': f"{usr.email}"})
+    json = jsonify({'email': f"{usr.email}"})
     json.set_cookie('session_id', f"{c_session}")
     return json, 200
 
