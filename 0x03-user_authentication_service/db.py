@@ -64,8 +64,9 @@ class DB:
                 raise InvalidRequestError
         raise InvalidRequestError
 
-    def update_user(self, user_id: int, **kwargs):
-        """ updates user instance """
+    def update_user(self, user_id: int, **kwargs) -> None:
+        """ updates a user instance """
+        
         if user_id is None or not isinstance(user_id, int):
             return None
 

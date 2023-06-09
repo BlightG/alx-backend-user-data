@@ -30,38 +30,38 @@ class Auth:
     def __init__(self):
         self._db = DB()
 
-    def register_user(self, u_email: str, u_password: str):
+    def register_user(self, email: str, password: str) -> User:
         """ used to register a user """
-        if u_email is None or not isinstance(u_email, str):
+        if email is None or not isinstance(email, str):
             return None
 
-        if u_password is None or not isinstance(u_password, str):
+        if password is None or not isinstance(password, str):
             return None
 
-        hashd = _hash_password(u_password)
+        hashd = _hash_password(password)
 
-        kwarg = {'email': u_email}
+        kwarg = {'email': email}
         try:
             obj = self._db.find_user_by(**kwarg)
             raise ValueError(f'User {obj.email} already exists')
         except (NoResultFound, InvalidRequestError):
-            usr = self._db.add_user(u_email, hashd)
+            usr = self._db.add_user(email, hashd)
             return usr
 
-    def valid_login(self, u_email: str, u_password: str) -> bool:
+    def valid_login(self, email: str, password: str) -> bool:
         """ verifies the password """
 
-        if u_email is None or not isinstance(u_email, str):
+        if email is None or not isinstance(email, str):
             return False
 
-        if u_password is None or not isinstance(u_password, str):
+        if password is None or not isinstance(password, str):
             return False
 
         try:
-            usr = self._db.find_user_by(email=u_email)
-            if usr.email == u_email:
+            usr = self._db.find_user_by(email=email)
+            if usr.email == email:
                 b_pass = usr.hashed_password.encode('utf-8')
-                b_hash = u_password.encode('utf-8')
+                b_hash = password.encode('utf-8')
                 return bcrypt.checkpw(b_hash, b_pass)
             return False
         except (NoResultFound, InvalidRequestError):
