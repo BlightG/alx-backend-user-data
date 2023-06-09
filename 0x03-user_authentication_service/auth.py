@@ -3,7 +3,7 @@
 import bcrypt
 from db import DB
 import uuid
-from user import User
+import user
 from sqlalchemy.exc import InvalidRequestError
 from sqlalchemy.orm.exc import NoResultFound
 
@@ -31,7 +31,7 @@ class Auth:
     def __init__(self):
         self._db = DB()
 
-    def register_user(self, email: str, password: str) -> User:
+    def register_user(self, email: str, password: str) -> user.User:
         """ used to register a user """
         if email is None or not isinstance(email, str):
             return None
